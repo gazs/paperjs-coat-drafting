@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>L.A.B. coat pattern</title>
+    <script type="text/javascript" src="https://unpkg.com/paper@0.11.5/dist/paper-full.js"></script>
+    <style type="text/css">
+html,
+body {
+    margin: 0;
+    overflow: hidden;
+    height: 100%;
+}
+
+/* Scale canvas with resize attribute to full size */
+canvas[resize] {
+    width: 100%;
+    height: 100%;
+}
+</style>
+
+  </head>
+  <body>
+    <canvas id="myCanvas" resize></canvas>
+    <script type="text/javascript">
+var canvas = document.getElementById('myCanvas');
+paper.install(window);
+paper.setup(canvas);
+
+project.currentStyle = {
+	strokeColor: '#555',
+	strokeWidth: 0.1,
+};
+
+canvas.addEventListener('wheel', (event) => {
+  //console.log(event)
+  paper.view.zoom -= event.deltaY / 200
+
+});
+
+const getPoint = (label) => () => instructions.find(i => i.label == label);
+
+const chest = 36
+const working_scale = chest/2;
+const natural_waist = 17;
+const back_length = 31;
+const cross_back = 8;
+
+const instructions = [
+  {
+    label: '0',
+    type: 'point',
+    location: new Point(0,0),
+    square_across: true,
+  },
+  {
+    label: '1',
+    type: 'point-at-distance',
+    from: () => instructions[0],
+    distance: working_scale / 2,
+    angle: '90',
+    square_across: true,
+  },
+  {
+    label: '2',
+    type: 'point-at-distance',
+    from: () => instructions[0],
+    distance: natural_waist,
+    angle: '90',
+    square_across: true,
+  },
+  {
+    label: '3',
+    type: 'point-at-distance',
+    from: () => instructions[2],
+    distance: 8,
+    angle: '90',
+    square_across: true,
+  },
+  {
+    label: '4',
+    type: 'point-at-distance',
+    from: () => instructions[0],
+    distance: back_length,
+    angle: '90',
+    square_across: true,
+  },
+  {
+    label: '5',
+    type: 'point-at-distance',
+    from: () => instructions[0],
+    distance: working_scale / 4,
+    angle: '90',
+    square_across: true,
+  },
+  {
+    label: '6',
+    type: 'point-at-distance',
+    from: () => instructions[0],
+    distance: working_scale / 8,
+    angle: '90',
+    square_across: true,
+  },
+  {
+    label: '2X',
+    type: 'point-at-distance',
+    from: () => instructions[2],
+    distance: 0.5,
+    angle: 0
+  },
+  {
+    label: '3X',
+    type: 'point-at-distance',
+    from: () => instructions[3],
+    distance: 0.5,
+    angle: 0
+  },
+  {
+    label: '4X',
+    type: 'point-at-distance',
+    from: () => instructions[4],
+    distance: 0.5,
+    angle: 0
+  },
+  {
+    type: 'connect',
+    points: ['4X', '3X', '2X', '6', '0']
+  },
+  {
+    label: '1X',
+    type: 'intersection-line-axis',
+    line: [5, '2X'],
+    axis_y: 1
+  },
+  {
+    label: '7',
+    type: 'point-at-distance',
+    from: () => instructions[0],
+    distance: 1/6 * working_scale + 1/4,
+    angle: 0
+  },
+  {
+    label: '8',
+    type: 'point-at-distance',
+    from: getPoint(7),
+    distance: 3/4,
+    angle: -90
+  },
+  {
+    label: '9',
+    type: 'point-at-distance',
+    from: getPoint(1),
+    distance: cross_back + 1/4,
+    angle: 0
+  },
+  {
+    label: 10,
+    type: 'axis-intersection',
+    axis_x: 9,
+    axis_y: 5
+  },
+  {
+    label: 11,
+    type: 'axis-intersection',
+    axis_x: 9,
+    axis_y: 6
+  },
+  {
+    label: 12,
+    type: 'point-at-distance',
+    from: getPoint(11),
+    distance: 3/4,
+    angle: -90
+  },
+  {
+    label: 13,
+    type: 'point-at-distance',
+    from: getPoint(12),
+    distance: 3/4,
+    angle: 0
+  },
+  {
+    label: 14,
+    type: 'point-at-distance',
+    from: getPoint(9),
+    distance: 2.5,
+    angle: -90
+  },
+  {
+    label: 15,
+    type: 'point-at-distance',
+    from: getPoint(14),
+    distance: 0.5,
+    angle: 0
+  },
+  {
+    label: 'S',
+    type: 'point-at-distance',
+    from: getPoint(14),
+    distance: 0.25,
+    angle: 0
+  },
+  {
+    label: 16,
+    type: 'point-at-distance',
+    from: () => instructions.find(i => i.label == 9),
+    distance: 0.75,
+    angle: 180
+  },
+  {
+    label: 17,
+    type: 'axis-intersection',
+    axis_x: 16,
+    axis_y: 2
+  },
+  {
+    label: 18,
+    type: 'axis-intersection',
+    axis_x: 16,
+    axis_y: 3
+  },
+  {
+    label: 19,
+    type: 'axis-intersection',
+    axis_x: 16,
+    axis_y: 4
+  },
+  {
+    label: '18X',
+    distance: 0.5,
+    type: 'point-at-distance',
+    from: () => instructions.find(i => i.label == 18),
+  },
+  {
+    type: 'connect',
+    points: ['15', '17', '18X']
+  },
+  {
+    type: 'connect',
+    points: ['13', '10', 'S']
+  },
+  {
+    type: 'connect',
+    points: ['13', '8']
+  },
+  {
+    label: 20,
+    type: 'point-at-distance',
+    from: getPoint(9),
+    distance: working_scale/4 + 1,
+    angle: 0
+  },
+  {
+    label: 21,
+    type: 'point-at-distance',
+    from: getPoint(20),
+    distance: 1,
+    angle: -90
+  },
+  {
+    label: 22,
+    type: 'point-at-distance',
+    from: getPoint(20),
+    distance: working_scale/6 + 0.5,
+    angle: 0
+  },
+  {
+    label: 23,
+    type: 'point-at-distance',
+    from: getPoint('1'), // FIXME
+    distance: chest/2 + 2.5 + 0.25,
+    angle: 0
+  },
+  {
+    label: 24,
+    type: 'axis-intersection',
+    axis_x: 23,
+    axis_y: 2
+  },
+  {
+    label: 25,
+    type: 'axis-intersection',
+    axis_x: 23,
+    axis_y: 3
+  },
+  {
+    label: 26,
+    type: 'axis-intersection',
+    axis_x: 23,
+    axis_y: 4
+  },
+  {
+    label: 27,
+    type: 'point-at-distance',
+    from: getPoint('26'),
+    distance: 0.75,
+    angle: 90
+  },
+  {
+    label: 28,
+    type: 'axis-intersection',
+    axis_x: 22,
+    axis_y: 0
+  },
+  {
+    type: 'connect',
+    points: ['28', '11']
+  }
+/*  {
+    type: 'connect',
+    points: ['32', '27']
+  }
+  */
+]
+
+instructions.forEach(instruction => {
+  switch (instruction.type) {
+    case 'point':
+      new Path.Circle({
+        center: instruction.location,
+        radius: 0.1,
+      })
+      break;
+    case 'point-at-distance':
+      const vector = new Point({
+        length: instruction.distance,
+        angle: instruction.angle
+      })
+
+      instruction.location = instruction.from().location.add(vector)
+
+
+      const line = new Path.Line({
+        from: instruction.from().location,
+        to: instruction.location,
+      })
+
+      new Path.Circle({
+        center: instruction.location,
+        radius: 0.1,
+      })
+
+      if (instruction.square_across) {
+        new Path.Line({
+          from: instruction.location,
+          to: instruction.location.add(new Point({length: 30, angle: 0 })),
+        })
+      }
+
+      break;
+
+    case 'intersection-line-axis':
+      instruction.location = getPoint(instruction.line[1])().location.subtract(
+        getPoint(instruction.line[0])().location
+      );
+      new Path.Circle({
+        center: instruction.location,
+        radius: 1,
+      })
+      break;
+
+
+    case 'axis-intersection':
+      instruction.location = new Point({
+        x: instructions.find(i => i.label == instruction.axis_x).location.x,
+        y: instructions.find(i => i.label == instruction.axis_y).location.y
+      })
+
+      new Path.Circle({
+        center: instruction.location,
+        radius: 0.1,
+      })
+      break;
+
+
+    case 'connect':
+      const path = new Path(
+        instruction.points.map(point => instructions.find(x => x.label == point).location)
+        )
+        path.strokeColor = 'red'
+      break;
+    default:
+      console.warn(`not implemented instruction type: ${instruction.type}`)
+  }
+
+      if (instruction.square_across) {
+        new Path.Line({
+          from: instruction.location,
+          to: instruction.location.add(new Point({length: 30, angle: 0 })),
+        })
+      }
+  console.log(instruction.label, instruction.location)
+
+
+})
+  paper.view.center = new Point(10, 10)
+  paper.view.zoom = 20
+
+    </script>
+  </body>
+</html>
